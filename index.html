@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Spica Astrologia — Astrologia Tradicional</title>
+  <meta name="description"
+    content="Traduzindo a linguagem celeste para o presente. Astrologia tradicional — sete planetas, doze casas, nenhum eufemismo.">
+  <meta property="og:title" content="Spica Astrologia">
+  <meta property="og:description" content="Traduzindo a linguagem celeste para o presente.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spica Astrologia">
+  <meta name="twitter:description" content="Astrologia tradicional — a linguagem dos astros antes da simplificação.">
+  <meta name="theme-color" content="#06040E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & TOKENS
+    ═══════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Backgrounds — deep indigo-black */
+      --bg: #06040E;
+      --bg-card: #0D0A1C;
+      --bg-card-h: #130F26;
+
+      /* Primary accent — amethyst violet */
+      --violet: #A67FDB;
+      --violet-bright: #C4A4F0;
+      --violet-20: rgba(166, 127, 219, .20);
+      --violet-12: rgba(166, 127, 219, .12);
+      --violet-06: rgba(166, 127, 219, .06);
+      --violet-border: rgba(166, 127, 219, .25);
+
+      /* Warm amber — reserved for CTA & Aurora card only */
+      --amber: #D4965A;
+      --amber-bright: #E8B87A;
+      --amber-20: rgba(212, 150, 90, .20);
+      --amber-border: rgba(212, 150, 90, .32);
+
+      /* Typography */
+      --text: #EDE8F5;
+      --text-muted: rgba(237, 232, 245, .60);
+      --text-faint: rgba(237, 232, 245, .45);
+
+      --radius-card: 16px;
+      --max-w: 430px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100svh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ═══════════════════════════════════════════
+       STARFIELD CANVAS
+    ═══════════════════════════════════════════ */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════
+       MAIN WRAPPER
+    ═══════════════════════════════════════════ */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    @media (min-width: 520px) {
+      main {
+        box-shadow:
+          0 0 0 1px rgba(166, 127, 219, .08),
+          0 0 80px rgba(0, 0, 0, .75);
+        background: linear-gradient(180deg, #09060F 0%, var(--bg) 100%);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem 7rem;
+      text-align: center;
+      position: relative;
+    }
+
+    /* ── Avatar + Rings ── */
+    .avatar-wrap {
+      position: relative;
+      width: 216px;
+      height: 216px;
+      margin-bottom: 2rem;
+      flex-shrink: 0;
+    }
+
+    .avatar-glow {
+      position: absolute;
+      inset: -24px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+          rgba(166, 127, 219, .20) 0%,
+          rgba(212, 150, 90, .06) 45%,
+          transparent 70%);
+      animation: pulse-glow 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        opacity: .75;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
+    .ring-outer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      animation: spin-cw 52s linear infinite;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .ring-mid {
+      position: absolute;
+      inset: 14px;
+      width: calc(100% - 28px);
+      height: calc(100% - 28px);
+      animation: spin-ccw 34s linear infinite;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @keyframes spin-cw {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin-ccw {
+      to {
+        transform: rotate(-360deg);
+      }
+    }
+
+    .avatar-chart {
+      position: absolute;
+      top: 28px;
+      left: 28px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 1;
+      border: 1px solid var(--violet-border);
+    }
+
+    /* ── Hero Text ── */
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 14vw, 4.8rem);
+      font-weight: 300;
+      letter-spacing: .35em;
+      text-indent: .35em;
+      color: var(--violet-bright);
+      line-height: 1;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(.85rem, 3.5vw, 1.05rem);
+      font-weight: 300;
+      letter-spacing: .3em;
+      text-indent: .3em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.7;
+      max-width: 270px;
+    }
+
+    /* ── Scroll Arrow ── */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.25rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .scroll-cue__link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .scroll-cue__arrow {
+      width: 30px;
+      height: 30px;
+      stroke: var(--violet);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      opacity: .55;
+      animation: bounce-arrow 2.2s ease-in-out infinite;
+    }
+
+    @keyframes bounce-arrow {
+
+      0%,
+      100% {
+        transform: translateY(0);
+        opacity: .4;
+      }
+
+      50% {
+        transform: translateY(7px);
+        opacity: .85;
+      }
+    }
+
+    .scroll-cue__label {
+      font-size: .62rem;
+      letter-spacing: .22em;
+      text-indent: .22em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    /* ═══════════════════════════════════════════
+       ORNAMENTAL DIVIDER
+    ═══════════════════════════════════════════ */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 0 2rem;
+    }
+
+    .ornament::before,
+    .ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+    }
+
+    .ornament::before {
+      background: linear-gradient(to right, transparent, var(--violet-border));
+    }
+
+    .ornament::after {
+      background: linear-gradient(to left, transparent, var(--violet-border));
+    }
+
+    .ornament__glyph {
+      font-size: .7rem;
+      color: var(--violet);
+      opacity: .45;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       LINKS SECTION
+    ═══════════════════════════════════════════ */
+    .links {
+      padding: 2.5rem 1.25rem 1.75rem;
+    }
+
+    .section-eyebrow {
+      text-align: center;
+      font-size: .65rem;
+      letter-spacing: .3em;
+      text-indent: .3em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 1.5rem;
+    }
+
+    /* 2×2 grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .7rem;
+    }
+
+    /* ── Standard link card ── */
+    .link-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--violet-border);
+      border-radius: var(--radius-card);
+      padding: 1.4rem .9rem 1.1rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .55rem;
+      text-align: center;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color .25s ease, transform .15s ease;
+      will-change: transform;
+    }
+
+    .link-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, var(--violet-20), transparent);
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    .link-card:active {
+      transform: scale(.964);
+      border-color: rgba(166, 127, 219, .55);
+    }
+
+    .link-card:focus-visible {
+      outline: 2px solid var(--violet);
+      outline-offset: 2px;
+    }
+
+    .link-card:active::before {
+      opacity: 1;
+    }
+
+    @media (hover: hover) {
+      .link-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(166, 127, 219, .55);
+      }
+
+      .link-card:hover::before {
+        opacity: 1;
+      }
+    }
+
+    .link-card__icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--violet-border);
+      background: var(--violet-06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .link-card__icon svg {
+      width: 19px;
+      height: 19px;
+      fill: var(--violet);
+    }
+
+    .link-card__name {
+      font-size: .78rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      color: var(--text);
+    }
+
+    .link-card__hook {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .72rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .link-card__spark {
+      position: absolute;
+      top: 9px;
+      right: 11px;
+      font-size: .5rem;
+      color: var(--violet);
+      animation: twinkle var(--dur, 4s) var(--del, 0s) ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: .18;
+        transform: scale(.8);
+      }
+
+      50% {
+        opacity: .85;
+        transform: scale(1.5);
+      }
+    }
+
+    /* ── Aurora Community Card (full-width, amber accent) ── */
+    .link-card--aurora {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 1.2rem 1.25rem;
+      gap: 1rem;
+      border-color: var(--amber-border);
+      background: linear-gradient(135deg, #130E08 0%, #0D0A1C 100%);
+    }
+
+    .link-card--aurora::before {
+      background: radial-gradient(ellipse 60% 80% at -5% 50%, var(--amber-20), transparent);
+    }
+
+    .link-card--aurora:active {
+      border-color: rgba(212, 150, 90, .6);
+    }
+
+    @media (hover: hover) {
+      .link-card--aurora:hover {
+        border-color: rgba(212, 150, 90, .6);
+      }
+    }
+
+    .link-card--aurora .link-card__icon {
+      border-color: var(--amber-border);
+      background: rgba(212, 150, 90, .06);
+      flex-shrink: 0;
+    }
+
+    .link-card--aurora .link-card__icon svg {
+      fill: var(--amber);
+    }
+
+    .link-card__aurora-text {
+      display: flex;
+      flex-direction: column;
+      gap: .28rem;
+      min-width: 0;
+    }
+
+    .link-card--aurora .link-card__name {
+      color: var(--amber-bright);
+    }
+
+    .link-card--aurora .link-card__hook {
+      color: var(--text-muted);
+    }
+
+    .link-card--aurora .link-card__spark {
+      color: var(--amber);
+    }
+
+    .link-card__badge {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: .57rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      opacity: .75;
+      border: 1px solid var(--amber-border);
+      border-radius: 4px;
+      padding: .18rem .45rem;
+    }
+
+    /* Ripple burst on tap */
+    .ripple-wave {
+      position: absolute;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      background: rgba(166, 127, 219, .22);
+      transform: scale(0);
+      animation: ripple-out .65s linear forwards;
+      pointer-events: none;
+    }
+
+    .link-card--aurora .ripple-wave {
+      background: rgba(212, 150, 90, .2);
+    }
+
+    @keyframes ripple-out {
+      to {
+        transform: scale(5);
+        opacity: 0;
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA BUTTON
+    ═══════════════════════════════════════════ */
+    .cta-wrap {
+      padding: 1.25rem 0 0;
+    }
+
+    .cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      width: 100%;
+      padding: 1.1rem 1.5rem;
+      background: linear-gradient(130deg, #D4965A 0%, #A06A2A 100%);
+      color: #0A0706;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-decoration: none;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .15s ease, box-shadow .3s ease;
+      box-shadow:
+        0 4px 28px rgba(212, 150, 90, .28),
+        0 0 0 1px rgba(212, 150, 90, .35);
+    }
+
+    .cta::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .22), transparent);
+      animation: shimmer 3.5s 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      to {
+        left: 180%;
+      }
+    }
+
+    .cta:active {
+      transform: scale(.975);
+    }
+
+    .cta:focus-visible {
+      outline: 2px solid var(--amber-bright);
+      outline-offset: 3px;
+    }
+
+    .cta svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       MANIFESTO SECTION
+    ═══════════════════════════════════════════ */
+    .manifesto {
+      padding: 3rem 1.5rem 3.5rem;
+      text-align: center;
+    }
+
+    .manifesto__eyebrow {
+      font-size: .62rem;
+      letter-spacing: .32em;
+      text-indent: .32em;
+      text-transform: uppercase;
+      color: var(--violet);
+      opacity: .7;
+      margin-bottom: 1.5rem;
+    }
+
+    .manifesto__body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 3.8vw, 1.22rem);
+      font-weight: 300;
+      line-height: 1.9;
+      color: var(--text);
+    }
+
+    .manifesto__body em {
+      font-style: italic;
+      color: var(--violet-bright);
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      padding: 1.75rem 1.5rem 3rem;
+      text-align: center;
+      border-top: 1px solid rgba(166, 127, 219, .08);
+    }
+
+    .footer__star {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--violet);
+      opacity: .22;
+      margin-bottom: .5rem;
+    }
+
+    .footer__copy {
+      font-size: .66rem;
+      letter-spacing: .12em;
+      color: var(--text-faint);
+    }
+
+    /* ═══════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .75s cubic-bezier(.22, 1, .36, 1),
+        transform .75s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ═══════════════════════════════════════════
+       ACCESSIBILITY
+    ═══════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── STARFIELD ──────────────────────────────── -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <main>
+
+    <!-- ══════════════════════════════════
+       HERO
+  ══════════════════════════════════ -->
+    <section class="hero" aria-label="Spica Astrologia">
+
+      <div class="avatar-wrap" aria-hidden="true">
+
+        <!-- Ambient glow -->
+        <div class="avatar-glow"></div>
+
+        <!-- ── Outer ring: 12 zodiac signs (clockwise) ── -->
+        <svg class="ring-outer" viewBox="0 0 216 216" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="108" cy="108" r="105" fill="none" stroke="rgba(166,127,219,.18)" stroke-width=".6" />
+          <g stroke="rgba(166,127,219,.30)" stroke-width=".5">
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(0,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(30,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(60,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(90,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(120,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(150,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(180,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(210,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(240,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(270,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(300,108,108)" />
+            <line x1="108" y1="3" x2="108" y2="12" transform="rotate(330,108,108)" />
+          </g>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(  0,108,108)">♈</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate( 30,108,108)">♉</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate( 60,108,108)">♊</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate( 90,108,108)">♋</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(120,108,108)">♌</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(150,108,108)">♍</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(180,108,108)">♎</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(210,108,108)">♏</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(240,108,108)">♐</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(270,108,108)">♑</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(300,108,108)">♒</text>
+          <text x="108" y="6.5" font-size="11" font-family="Georgia,serif" fill="rgba(166,127,219,.78)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(330,108,108)">♓</text>
+        </svg>
+
+        <!-- ── Middle ring: 7 classical planets (counter-clockwise) ── -->
+        <svg class="ring-mid" viewBox="0 0 188 188" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="94" cy="94" r="91" fill="none" stroke="rgba(166,127,219,.10)" stroke-width=".6"
+            stroke-dasharray="3 8" />
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.62)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(  0,94,94)">☉</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.55)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate( 51,94,94)">☽</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(103,94,94)">♀</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(154,94,94)">♂</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(206,94,94)">♃</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(257,94,94)">♄</text>
+          <text x="94" y="6" font-size="9.5" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+            text-anchor="middle" dominant-baseline="middle" transform="rotate(309,94,94)">☿</text>
+        </svg>
+
+        <!-- ── Astrological chart wheel (avatar placeholder) ── -->
+        <svg class="avatar-chart" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img"
+          aria-label="Carta astrológica decorativa — Spica Astrologia">
+          <defs>
+            <radialGradient id="bg-grad" cx="38%" cy="33%" r="65%">
+              <stop offset="0%" stop-color="#1A0E35" />
+              <stop offset="100%" stop-color="#06040E" />
+            </radialGradient>
+            <filter id="pt-glow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="1.8" result="b" />
+              <feComposite in="SourceGraphic" in2="b" operator="over" />
+            </filter>
+            <clipPath id="chart-clip">
+              <circle cx="80" cy="80" r="80" />
+            </clipPath>
+          </defs>
+
+          <g clip-path="url(#chart-clip)">
+            <circle cx="80" cy="80" r="80" fill="url(#bg-grad)" />
+
+            <!-- Outer house ring -->
+            <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(166,127,219,.28)" stroke-width=".7" />
+
+            <!-- 12 house division lines -->
+            <g transform="translate(80,80)" stroke="rgba(166,127,219,.18)" stroke-width=".6">
+              <line x1="0" y1="-44" x2="0" y2="-70" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(30)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(60)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(90)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(120)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(150)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(180)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(210)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(240)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(270)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(300)" />
+              <line x1="0" y1="-44" x2="0" y2="-70" transform="rotate(330)" />
+            </g>
+
+            <!-- Inner house circle -->
+            <circle cx="80" cy="80" r="44" fill="none" stroke="rgba(166,127,219,.22)" stroke-width=".6" />
+
+            <!-- 4 angular axes (ASC/DSC, MC/IC) -->
+            <g transform="translate(80,80)" stroke="rgba(166,127,219,.48)" stroke-width=".9">
+              <line x1="-70" y1="0" x2="70" y2="0" />
+              <line x1="0" y1="-70" x2="0" y2="70" />
+            </g>
+
+            <!-- Innermost circle -->
+            <circle cx="80" cy="80" r="18" fill="none" stroke="rgba(166,127,219,.12)" stroke-width=".5" />
+
+            <!-- Aspect lines (subtle) -->
+            <g stroke="rgba(166,127,219,.10)" stroke-width=".5">
+              <line x1="108" y1="28" x2="34" y2="98" />
+              <line x1="108" y1="28" x2="50" y2="33" />
+              <line x1="34" y1="98" x2="114" y2="116" />
+              <line x1="50" y1="33" x2="119" y2="73" />
+            </g>
+
+            <!-- Planet glyphs (decorative) -->
+            <text x="108" y="28" font-size="8" font-family="Georgia,serif" fill="rgba(212,150,90,.80)"
+              text-anchor="middle" dominant-baseline="middle" filter="url(#pt-glow)">☉</text>
+            <text x="34" y="98" font-size="7" font-family="Georgia,serif" fill="rgba(166,127,219,.65)"
+              text-anchor="middle" dominant-baseline="middle">☽</text>
+            <text x="119" y="73" font-size="7" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+              text-anchor="middle" dominant-baseline="middle">♄</text>
+            <text x="50" y="33" font-size="7" font-family="Georgia,serif" fill="rgba(166,127,219,.52)"
+              text-anchor="middle" dominant-baseline="middle">♃</text>
+            <text x="114" y="116" font-size="6.5" font-family="Georgia,serif" fill="rgba(166,127,219,.45)"
+              text-anchor="middle" dominant-baseline="middle">♂</text>
+            <text x="21" y="63" font-size="6.5" font-family="Georgia,serif" fill="rgba(166,127,219,.45)"
+              text-anchor="middle" dominant-baseline="middle">♀</text>
+            <text x="96" y="42" font-size="6" font-family="Georgia,serif" fill="rgba(166,127,219,.40)"
+              text-anchor="middle" dominant-baseline="middle">☿</text>
+
+            <!-- Center — Spica point -->
+            <circle cx="80" cy="80" r="3.5" fill="rgba(166,127,219,.25)" filter="url(#pt-glow)" />
+            <circle cx="80" cy="80" r="1.5" fill="rgba(196,164,240,.9)" />
+          </g>
+        </svg>
+
+      </div><!-- /avatar-wrap -->
+
+      <h1 class="hero-name">Spica</h1>
+      <p class="hero-sub">Astrologia</p>
+      <p class="hero-tagline">Traduzindo a linguagem<br>celeste para o presente</p>
+
+      <!-- Bouncing arrow scroll cue -->
+      <div class="scroll-cue">
+        <a href="#links" class="scroll-cue__link" aria-label="Rolar para a seção de links">
+          <svg class="scroll-cue__arrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <polyline points="4 9 12 17 20 9" />
+          </svg>
+          <span class="scroll-cue__label">explorar</span>
+        </a>
+      </div>
+
+    </section>
+
+    <div class="ornament" aria-hidden="true">
+      <span class="ornament__glyph">✦</span>
+    </div>
+
+    <!-- ══════════════════════════════════
+       LINKS
+  ══════════════════════════════════ -->
+    <section class="links" id="links" aria-label="Redes e canais">
+
+      <p class="section-eyebrow">Encontre-me em</p>
+
+      <div class="links-grid">
+
+        <!-- YouTube -->
+        <a class="link-card reveal" id="link-youtube" href="https://www.youtube.com/@spicaastrologia" target="_blank"
+          rel="noopener noreferrer" aria-label="Canal no YouTube — @spicaastrologia">
+          <span class="link-card__spark" style="--dur:3.8s;--del:0s">✦</span>
+          <div class="link-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          </div>
+          <span class="link-card__name">YouTube</span>
+          <span class="link-card__hook">@spicaastrologia</span>
+        </a>
+
+        <!-- Instagram -->
+        <a class="link-card reveal" id="link-instagram" href="https://www.instagram.com/spica.astrologia/"
+          target="_blank" rel="noopener noreferrer" aria-label="Instagram — @spica.astrologia">
+          <span class="link-card__spark" style="--dur:5.1s;--del:.9s">✦</span>
+          <div class="link-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+            </svg>
+          </div>
+          <span class="link-card__name">Instagram</span>
+          <span class="link-card__hook">@spica.astrologia</span>
+        </a>
+
+        <!-- TikTok -->
+        <a class="link-card reveal" id="link-tiktok" href="https://www.tiktok.com/@spicaastrologia" target="_blank"
+          rel="noopener noreferrer" aria-label="TikTok — @spicaastrologia">
+          <span class="link-card__spark" style="--dur:3.4s;--del:1.7s">✦</span>
+          <div class="link-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+            </svg>
+          </div>
+          <span class="link-card__name">TikTok</span>
+          <span class="link-card__hook">@spicaastrologia</span>
+        </a>
+
+        <!-- Substack -->
+        <a class="link-card reveal" id="link-substack" href="https://gabrielccervi.substack.com/" target="_blank"
+          rel="noopener noreferrer" aria-label="Substack — @gabrielccervi">
+          <span class="link-card__spark" style="--dur:4.7s;--del:2.5s">✦</span>
+          <div class="link-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+            </svg>
+          </div>
+          <span class="link-card__name">Substack</span>
+          <span class="link-card__hook">@gabrielccervi</span>
+        </a>
+
+        <!-- ── Comunidade Aurora (full-width, amber accent) ── -->
+        <a class="link-card link-card--aurora reveal" id="link-aurora" href="https://apoia.se/comunidadeaurora"
+          target="_blank" rel="noopener noreferrer" aria-label="Comunidade Aurora — Conteúdo exclusivo pago">
+          <span class="link-card__spark" style="--dur:4.2s;--del:1.1s">✦</span>
+          <div class="link-card__badge" aria-label="Conteúdo exclusivo">Exclusivo</div>
+          <div class="link-card__icon" aria-hidden="true">
+            <!-- Dawn/Aurora star icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path
+                d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </div>
+          <div class="link-card__aurora-text">
+            <span class="link-card__name">Comunidade Aurora</span>
+            <span class="link-card__hook">Conteúdo aprofundado e acesso exclusivo</span>
+          </div>
+        </a>
+
+      </div><!-- /links-grid -->
+
+      <!-- Main CTA -->
+      <div class="cta-wrap reveal">
+        <a href="https://spicaastrologia.weebly.com/" class="cta" id="cta-consulta" target="_blank"
+          rel="noopener noreferrer" aria-label="Entrar em contato — Quero entender meu mapa">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Quero entender meu mapa
+        </a>
+      </div>
+
+    </section>
+
+    <div class="ornament" aria-hidden="true">
+      <span class="ornament__glyph">✦</span>
+    </div>
+
+    <!-- ══════════════════════════════════
+       MANIFESTO
+  ══════════════════════════════════ -->
+    <section class="manifesto reveal" aria-labelledby="manifesto-heading">
+
+      <p class="manifesto__eyebrow" id="manifesto-heading">Astrologia Tradicional</p>
+
+      <p class="manifesto__body">
+        Muito antes dos horóscopos de jornal,
+        existia uma linguagem precisa dos céus —
+        desenvolvida ao longo de séculos de
+        observação, matemática e filosofia.<br><br>
+        A astrologia <em>tradicional</em> não fala
+        em "energia" nem em "vibração".
+        Ela fala em <em>planetas, casas,
+          dignidades e julgamentos</em>.<br><br>
+        É técnica. É direta.
+        <em>É outra coisa.</em>
+      </p>
+
+    </section>
+
+    <!-- ══════════════════════════════════
+       FOOTER
+  ══════════════════════════════════ -->
+    <footer>
+      <span class="footer__star" aria-hidden="true">✦</span>
+      <p class="footer__copy">Spica Astrologia &middot; Astrologia Tradicional</p>
+    </footer>
+
+  </main>
+
+  <!-- ─── SCRIPTS ───────────────────────────────── -->
+  <script>
+    /* ── Starfield — mixed violet & amber stars ─────────── */
+    (function () {
+      'use strict';
+      const canvas = document.getElementById('starfield');
+      const ctx = canvas.getContext('2d');
+      const N = 170;
+      let W, H, stars = [];
+      let scrollY = 0;
+
+      // Star color palette: mostly violet, some warm amber/white
+      const COLORS = [
+        [166, 127, 219],  // amethyst violet  ×4
+        [166, 127, 219],
+        [166, 127, 219],
+        [166, 127, 219],
+        [196, 164, 240],  // pale violet      ×2
+        [196, 164, 240],
+        [212, 150, 90],  // warm amber       ×1
+        [237, 232, 245],  // near-white       ×1
+      ];
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function init() {
+        stars = Array.from({ length: N }, () => {
+          const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+          return {
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: Math.random() * 1.3 + 0.15,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.32 + 0.16,
+            color: c,
+          };
+        });
+      }
+
+      window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive: true });
+
+      function draw(t) {
+        ctx.clearRect(0, 0, W, H);
+        const ts = t / 1000;
+        for (const s of stars) {
+          const rawY = s.y - scrollY * 0.15;
+          const drawY = ((rawY % H) + H) % H;
+          const alpha = 0.12 + 0.52 * (0.5 + 0.5 * Math.sin(ts * s.speed + s.phase));
+          const [r, g, b] = s.color;
+          ctx.beginPath();
+          ctx.arc(s.x, drawY, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha.toFixed(3)})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      init();
+      requestAnimationFrame(draw);
+      window.addEventListener('resize', () => { resize(); init(); }, { passive: true });
+    })();
+
+    /* ── Hero staggered entrance ──────────────────────── */
+    (function () {
+      'use strict';
+      const items = [
+        document.querySelector('.avatar-wrap'),
+        document.querySelector('.hero-name'),
+        document.querySelector('.hero-sub'),
+        document.querySelector('.hero-tagline'),
+        document.querySelector('.scroll-cue'),
+      ];
+      items.forEach(el => {
+        if (!el) return;
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(12px)';
+      });
+      items.forEach((el, i) => {
+        if (!el) return;
+        setTimeout(() => {
+          el.style.transition = 'opacity .95s cubic-bezier(.22,1,.36,1), transform .95s cubic-bezier(.22,1,.36,1)';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }, 120 + i * 160);
+      });
+    })();
+
+    /* ── Scroll reveal ──────────────────────────────── */
+    (function () {
+      'use strict';
+      const els = document.querySelectorAll('.reveal');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const sibs = [...entry.target.parentElement.querySelectorAll('.reveal')];
+          const idx = sibs.indexOf(entry.target);
+          entry.target.style.transitionDelay = `${idx * 0.07}s`;
+          entry.target.classList.add('in');
+          obs.unobserve(entry.target);
+        });
+      }, { threshold: 0.07, rootMargin: '0px 0px -28px 0px' });
+      els.forEach(el => obs.observe(el));
+    })();
+
+    /* ── Ripple on tap ────────────────────────────── */
+    (function () {
+      'use strict';
+      function addRipple(e) {
+        const card = e.currentTarget;
+        const rect = card.getBoundingClientRect();
+        const pt = e.touches ? e.touches[0] : e;
+        const wave = document.createElement('span');
+        wave.className = 'ripple-wave';
+        wave.style.left = `${pt.clientX - rect.left - 40}px`;
+        wave.style.top = `${pt.clientY - rect.top - 40}px`;
+        card.appendChild(wave);
+        wave.addEventListener('animationend', () => wave.remove(), { once: true });
+      }
+      document.querySelectorAll('.link-card').forEach(card => {
+        card.addEventListener('touchstart', addRipple, { passive: true });
+        card.addEventListener('mousedown', addRipple);
+      });
+    })();
+  </script>
+
+</body>
+
+</html>
